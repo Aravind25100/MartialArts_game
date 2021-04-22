@@ -48,6 +48,10 @@ let loadImages = (callback) =>{
 
 // this function is uses to animate the images
 let Animate = (ctx,ctx1,leftpos,rightpos,images,animation,move,Collision,callback) =>{
+    if(animation==="kick" || animation==="punch"){
+        setTimeout(()=>{actionSound = new sound("images/"+animation+".mp3");
+        actionSound.play()},400);
+    }
     images[animation].forEach((image,index)=>{
          setTimeout(()=>{
             let extraframe=500;
@@ -57,6 +61,9 @@ let Animate = (ctx,ctx1,leftpos,rightpos,images,animation,move,Collision,callbac
             ctx1.drawImage(image,leftpos,0,500,500);
          },index*100);
     });
+    if(move==="kick" || move==="punch" ){
+        actionSound = new sound("images/"+move+".mp3").play();
+    }
     images[move].forEach((image,index)=>{
         setTimeout(()=>{
            let extraframe=500;
@@ -86,6 +93,7 @@ function sound(src) {
     this.sound.setAttribute("preload", "auto");
     this.sound.setAttribute("controls", "none");
     this.sound.style.display = "none";
+    this.sound.autoplay=true;
     document.body.appendChild(this.sound);
     this.play = function(){
         this.sound.play();
@@ -107,7 +115,7 @@ loadImages((images)=>{
         if(queuedAnimate.length===0){
             selectedAnimate="idle";
         }else{
-            setTimeout((selectedAnimate = queuedAnimate.shift()),3000);
+            selectedAnimate = queuedAnimate.shift();
         }
         if(moves==="forward"){
             if(leftmove==6 || leftmove+rightmove==6)
@@ -130,14 +138,6 @@ loadImages((images)=>{
             else{
                 rightposition[0]=rightposition[0];
             }
-        }
-        else if(moves==="kick"){
-            setTimeout(()=>{actionSound = new sound("images/kick.mp3");
-            actionSound.play()},400);
-        }
-        else if(moves==="punch"){
-            setTimeout(()=>{actionSound = new sound("images/punch.mp3");
-            actionSound.play()},400);
         }
         else if(moves==="block" && (rightmove===6 || leftmove===6 || rightmove+leftmove===6) && (selectedAnimate==="punch" || selectedAnimate==="kick")){
             setTimeout(()=>{actionSound = new sound("images/shield.mp3");
@@ -189,13 +189,9 @@ loadImages((images)=>{
 
     document.getElementById("kick").onclick = ()=>{
         setTimeout(queuedAnimate.push("kick"),3000);
-        setTimeout(()=>{actionSound = new sound("images/kick.mp3");
-        actionSound.play()},400);
     };
     document.getElementById("punch").onclick = ()=>{
         setTimeout(queuedAnimate.push("punch"),3000);
-        setTimeout(()=>{actionSound = new sound("images/punch.mp3");
-        actionSound.play()},400);
      };
      document.getElementById("forward").onclick = ()=>{
         setTimeout(queuedAnimate.push("forward"),3000);
@@ -230,13 +226,9 @@ loadImages((images)=>{
         const key = event.key; //arrow right,left,up,down and letters
         if(key==="ArrowUp" || key==="w"){
             setTimeout(queuedAnimate.push("kick"),3000);
-            setTimeout(()=>{actionSound = new sound("images/kick.mp3");
-            actionSound.play()},800);
         }
         else if(key==="ArrowDown" || key==="x"){
             setTimeout(queuedAnimate.push("punch"),3000);
-            setTimeout(()=>{actionSound = new sound("images/punch.mp3");
-            actionSound.play()},800);
         }
         else if(key==="ArrowRight" || key==="s"){
             setTimeout(queuedAnimate.push("forward"),3000);
