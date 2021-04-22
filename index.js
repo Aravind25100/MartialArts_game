@@ -63,7 +63,7 @@ let Animate = (ctx,ctx1,leftpos,rightpos,images,animation,move,Collision,callbac
            if(Collision===6)
                extraframe=320;
            else if(Collision+1===6)
-               extraframe=350
+               extraframe=350;
            ctx.clearRect((-(rightpos)-extraframe),0,extraframe+50,500);
            ctx.save(); // Save the current state
            ctx.scale(-1, 1); // Set scale to flip the image
@@ -107,7 +107,7 @@ loadImages((images)=>{
         if(queuedAnimate.length===0){
             selectedAnimate="idle";
         }else{
-            selectedAnimate = queuedAnimate.shift();
+            setTimeout((selectedAnimate = queuedAnimate.shift()),3000);
         }
         if(moves==="forward"){
             if(leftmove==6 || leftmove+rightmove==6)
@@ -199,11 +199,26 @@ loadImages((images)=>{
      };
      document.getElementById("forward").onclick = ()=>{
         setTimeout(queuedAnimate.push("forward"),3000);
-        leftposition[0]+100<=550?leftposition[0]=leftposition[0]+100:leftposition[0]=leftposition[0];
+        if(rightmove==6 || leftmove+rightmove==6)
+           leftposition[0]=leftposition[0];
+        else if(rightmove+leftmove<6){
+           if(leftposition[0]+100<=600){
+               leftposition[0]=leftposition[0]+100;
+               leftmove=leftmove+1              
+            }
+           else
+               leftposition[0]=leftposition[0];
+        }
     };
     document.getElementById("backward").onclick = ()=>{
         setTimeout(queuedAnimate.push("backward"),3000);
-        leftposition[0]-100>=0?leftposition[0]=leftposition[0]-100:leftposition[0]=leftposition[0];
+        if(leftposition[0]-100>=0){
+            leftposition[0]=leftposition[0]-100;
+            leftmove=leftmove-1; 
+       }
+        else{
+            leftposition[0]=leftposition[0];
+        }
      };
      document.getElementById("block").onclick = ()=>{
         setTimeout(queuedAnimate.push("block"),3000);
