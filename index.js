@@ -121,7 +121,7 @@ loadImages((images)=>{
         }else{
             selectedAnimate = queuedAnimate.shift();
         }
-        if(leftmove+rightmove<6-1)
+        if(leftmove+rightmove<5)
            moves="forward";
         if(moves==="forward"){
             if(leftmove==6 || leftmove+rightmove==6)
