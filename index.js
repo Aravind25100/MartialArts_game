@@ -52,6 +52,10 @@ let Animate = (ctx,ctx1,leftpos,rightpos,images,animation,move,Collision,callbac
         setTimeout(()=>{actionSound = new sound("images/"+animation+".mp3");
         actionSound.play()},400);
     }
+    if((rightmove===6 || leftmove===6 || rightmove+leftmove===6) && (((animation==="kick" || animation==="punch") && move==="block")|| ((move==="kick" || move==="punch") && animation==="block"))){
+        setTimeout(()=>{actionSound = new sound("images/shield.mp3");
+        actionSound.play()},400);
+    }
     images[animation].forEach((image,index)=>{
          setTimeout(()=>{
             let extraframe=500;
@@ -147,30 +151,31 @@ loadImages((images)=>{
         if(leftmove===6){
             if((selectedAnimate==="kick" || selectedAnimate==="punch") && moves!="block"){
                  let redLife = document.getElementById("lifeRed");
-                 setTimeout((rightLife=rightLife-10),500);
+                 setTimeout((rightLife=rightLife-10),1000);
                  (redLife.style.width = rightLife+"%");
             }
         }    
         if(rightmove===6){
             if((moves==="kick" || moves==="punch") && selectedAnimate!="block"){
                  let greenLife = document.getElementById("lifeGreen");
-                 setTimeout((leftLife=leftLife-10),500);
+                 setTimeout((leftLife=leftLife-10),1000);
                  (greenLife.style.width = leftLife+"%");
             }
         }    
         if(rightmove+leftmove===6){
-                if((selectedAnimate==="kick" || selectedAnimate==="punch") && moves!="block"){
+                if((selectedAnimate==="kick" || selectedAnimate==="punch") && (moves!="block" || moves!="backward")){
                      let redLife = document.getElementById("lifeRed");
-                     setTimeout((rightLife=rightLife-10),500);
+                     setTimeout((rightLife=rightLife-10),1000);
                      (redLife.style.width = rightLife+"%");
             }
             if((moves==="kick" || moves==="punch") && (selectedAnimate!="block" || selectedAnimate!="backward")){
                  let greenLife = document.getElementById("lifeGreen");
-                 setTimeout((leftLife=leftLife-10),500);
+                 setTimeout((leftLife=leftLife-10),1000);
                  (greenLife.style.width = leftLife+"%");
             }
         } 
         if(rightLife>0 && leftLife>0){
+               ctx.clearRect(0,0,1300,500);
                setTimeout((Animate(ctx,ctx1,leftposition[0],rightposition[0],images,selectedAnimate,moves,rightmove+leftmove,aux)),500);
         }
         else{
@@ -180,9 +185,10 @@ loadImages((images)=>{
             }
             else if(leftLife<=0){
                 announcement = "Player 2 win the match!";
-            }
-            document.getElementById("result").innerHTML=announcement;
-            document.getElementById("popup-1").classList.toggle("active");
+            }setTimeout(()=>{
+                document.getElementById("result").innerHTML=announcement;
+                document.getElementById("popup-1").classList.toggle("active");
+            },200);
         }
     };
     aux();
@@ -218,8 +224,6 @@ loadImages((images)=>{
      };
      document.getElementById("block").onclick = ()=>{
         setTimeout(queuedAnimate.push("block"),3000);
-        setTimeout(()=>{actionSound = new sound("images/shield.mp3");
-        actionSound.play()},400);
      };
 
      document.addEventListener("keydown",(event)=>{
@@ -256,10 +260,6 @@ loadImages((images)=>{
         }
         else if(event.code === "Space"){
             setTimeout(queuedAnimate.push("block"),3000);
-            if(rightmove===6 || leftmove===6 || rightmove+leftmove===6){
-                setTimeout(()=>{actionSound = new sound("images/shield.mp3");
-                actionSound.play()},400);
-            }
         }
     });
 });
