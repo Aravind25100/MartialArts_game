@@ -2,8 +2,6 @@ let c = document.getElementById("game");
 let ctx = c.getContext("2d");
 let ctx1 = c.getContext("2d");
  
-//mirror the image
-
 // this function will load the image
 let loadImage = (src,callback) =>{
     let img=document.createElement("img");
@@ -49,12 +47,12 @@ let loadImages = (callback) =>{
 // this function is uses to animate the images
 let Animate = (ctx,ctx1,leftpos,rightpos,images,animation,move,Collision,callback) =>{
     if(animation==="kick" || animation==="punch"){
-        setTimeout(()=>{actionSound = new sound("images/"+animation+".mp3");
-        actionSound.play()},400);
+        actionSound = new sound("images/"+animation+".mp3");
+        actionSound.play();
     }
     if((rightmove===6 || leftmove===6 || rightmove+leftmove===6) && (((animation==="kick" || animation==="punch") && move==="block")|| ((move==="kick" || move==="punch") && animation==="block"))){
-        setTimeout(()=>{actionSound = new sound("images/shield.mp3");
-        actionSound.play()},400);
+        actionSound = new sound("images/shield.mp3");
+        actionSound.play();
     }
     images[animation].forEach((image,index)=>{
          setTimeout(()=>{
@@ -146,8 +144,8 @@ loadImages((images)=>{
             }
         }
         else if(moves==="block" && (rightmove===6 || leftmove===6 || rightmove+leftmove===6) && (selectedAnimate==="punch" || selectedAnimate==="kick")){
-            setTimeout(()=>{actionSound = new sound("images/shield.mp3");
-            actionSound.play()},400);
+            actionSound = new sound("images/shield.mp3");
+            actionSound.play();
         }
 
         if(leftmove===6){
@@ -178,7 +176,7 @@ loadImages((images)=>{
         } 
         if(rightLife>0 && leftLife>0){
                ctx.clearRect(0,0,1300,500);
-               setTimeout((Animate(ctx,ctx1,leftposition[0],rightposition[0],images,selectedAnimate,moves,rightmove+leftmove,aux)),500);
+               Animate(ctx,ctx1,leftposition[0],rightposition[0],images,selectedAnimate,moves,rightmove+leftmove,aux);
         }
         else{
             let announcement="";
@@ -196,13 +194,13 @@ loadImages((images)=>{
     aux();
 
     document.getElementById("kick").onclick = ()=>{
-        setTimeout(queuedAnimate.push("kick"),3000);
+        queuedAnimate.push("kick");
     };
     document.getElementById("punch").onclick = ()=>{
-        setTimeout(queuedAnimate.push("punch"),3000);
+        queuedAnimate.push("punch");
      };
      document.getElementById("forward").onclick = ()=>{
-        setTimeout(queuedAnimate.push("forward"),3000);
+        queuedAnimate.push("forward");
         if(rightmove==6 || leftmove+rightmove==6)
            leftposition[0]=leftposition[0];
         else if(rightmove+leftmove<6){
@@ -215,7 +213,7 @@ loadImages((images)=>{
         }
     };
     document.getElementById("backward").onclick = ()=>{
-        setTimeout(queuedAnimate.push("backward"),3000);
+        queuedAnimate.push("backward");
         if(leftposition[0]-100>=0){
             leftposition[0]=leftposition[0]-100;
             leftmove=leftmove-1; 
@@ -225,19 +223,19 @@ loadImages((images)=>{
         }
      };
      document.getElementById("block").onclick = ()=>{
-        setTimeout(queuedAnimate.push("block"),3000);
+        queuedAnimate.push("block");
      };
 
      document.addEventListener("keydown",(event)=>{
         const key = event.key; //arrow right,left,up,down and letters
         if(key==="ArrowUp" || key==="w"){
-            setTimeout(queuedAnimate.push("kick"),3000);
+            queuedAnimate.push("kick");
         }
         else if(key==="ArrowDown" || key==="x"){
-            setTimeout(queuedAnimate.push("punch"),3000);
+            queuedAnimate.push("punch");
         }
         else if(key==="ArrowRight" || key==="s"){
-            setTimeout(queuedAnimate.push("forward"),3000);
+            queuedAnimate.push("forward");
             if(rightmove==6 || leftmove+rightmove==6)
                leftposition[0]=leftposition[0];
             else if(rightmove+leftmove<6){
@@ -251,7 +249,7 @@ loadImages((images)=>{
                
         }
         else if(key==="ArrowLeft" || key==="d"){
-            setTimeout(queuedAnimate.push("backward"),3000);
+            queuedAnimate.push("backward");
             if(leftposition[0]-100>=0){
                 leftposition[0]=leftposition[0]-100;
                 leftmove=leftmove-1; 
@@ -261,7 +259,7 @@ loadImages((images)=>{
             }
         }
         else if(event.code === "Space"){
-            setTimeout(queuedAnimate.push("block"),3000);
+            queuedAnimate.push("block");
         }
     });
 });
