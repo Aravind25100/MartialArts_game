@@ -186,12 +186,12 @@ loadImages((images)=>{
         } 
         // Reduce life with respect to the player   
         if(rightmove+leftmove===6){
-                if((selectedAnimate==="kick" || selectedAnimate==="punch") && (moves!="block" || moves!="backward")){
+                if((selectedAnimate==="kick" || selectedAnimate==="punch") && (moves!="block")){
                      let redLife = document.getElementById("lifeRed");
                      setTimeout((rightLife=rightLife-10),1000);
                      (redLife.style.width = rightLife+"%");
             }
-            if((moves==="kick" || moves==="punch") && (selectedAnimate!="block" || selectedAnimate!="backward")){
+            if((moves==="kick" || moves==="punch") && (selectedAnimate!="block")){
                  let greenLife = document.getElementById("lifeGreen");
                  setTimeout((leftLife=leftLife-10),1000);
                  (greenLife.style.width = leftLife+"%");
