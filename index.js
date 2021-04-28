@@ -148,6 +148,8 @@ loadImages((images) => {
             moves = "forward";
 
         // Here change the position according to the forward move
+        // The player can move only 6 steps forward/backward
+        // The player before doing any action like kick or punch should reach very close to the another player to reduce his life
         if (moves === "forward") {
             if (playerMoves == 6 || playerMoves + opponentMoves == 6)
                 opponentPosition[0] = opponentPosition[0]
@@ -175,6 +177,7 @@ loadImages((images) => {
             actionSound.play();
         }
         // Reduce life for the opponent when the user try to attack and the opponent is not using block move to protect
+        // while using block move a player's life wont reduce.
         if (playerMoves === 6) {
             if ((selectedAnimate === "kick" || selectedAnimate === "punch") && moves != "block") {
                 let redLife = document.getElementById("lifeRed");
@@ -183,6 +186,7 @@ loadImages((images) => {
             }
         }
         // Reduce life for the user when the opponent try to attack and the user is not using block move to protect
+        // while using block move a player's life wont reduce.
         if (opponentMoves === 6) {
             if ((moves === "kick" || moves === "punch") && selectedAnimate != "block") {
                 let greenLife = document.getElementById("lifeGreen");
@@ -204,12 +208,11 @@ loadImages((images) => {
             }
         }
 
-        // It will animate the pictures if the players are not lose
+        // As long as life is not equal to 0 the animate function will work otherwise it will go to the else condition
         if (opponentLife > 0 && playerLife > 0) {
             opponentCanvas.clearRect(0, 0, 1300, 500);
             Animate(opponentCanvas, playerCanvas, playerPosition[0], opponentPosition[0], images, selectedAnimate, moves, opponentMoves + playerMoves, aux);
         }
-        // It will announce the player name who win the match
         else {
             let announcement = "";
             if (opponentLife <= 0) {
@@ -217,6 +220,7 @@ loadImages((images) => {
             } else if (playerLife <= 0) {
                 announcement = "Player 2 win the match!";
             }
+            // It will announce the player's name who wins the match
             setTimeout(() => {
                 document.getElementById("result").innerHTML = announcement;
                 document.getElementById("popup-1").classList.toggle("active");
@@ -225,7 +229,7 @@ loadImages((images) => {
     };
     aux();
 
-    // using buttons to access the user game object
+    // using buttons to access the player moves
     document.getElementById("kick").onclick = () => {
         queuedAnimate.push("kick");
     };
@@ -257,7 +261,7 @@ loadImages((images) => {
         queuedAnimate.push("block");
     };
 
-    // using keyboard to access the user game object
+    // using keyboard to access the player moves
     document.addEventListener("keydown", (event) => {
         const key = event.key; //arrow right,left,up,down and letters
         if (key === "ArrowUp" || key === "w") {
