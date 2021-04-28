@@ -1,175 +1,195 @@
 <!DOCTYPE html>
+
 <head>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Martial-Arts Game</title>
-   <link rel="icon" href="images/kick/4.png" type="image/icon type">
-   <link rel="preconnect" href="https://fonts.gstatic.com">
-   <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
-   <style>
-       body {
-         margin:0;
-         padding: 0;
-         background: url("images/background.jpg");;
-         background-size: cover;
-      }
-      #items{
-          text-align:left;
-          list-style-type: none;
-      }
-      #items li{
-          padding:10px 12px;
-      }
-      .popup .overlay{
-          position: fixed;
-          top: 0px;
-          left:0px;
-          width:100%;
-          height:100vh;
-          z-index: 1;
-          display:none;
-          background-color: rgba(0,0,0,0.7);
-      }
-      .popup .content{
-          border-radius: 10px;
-          border-style:solid;
-          border-color: grey;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%,-50%) scale(0);
-          background-color: white;
-          width:450px;
-          height: 400px;
-          z-index: 2;
-          text-align: center;
-          padding: 20px;
-          box-sizing: border-box;
-          border-radius: 10px;
-      }
-      .popup .close-btn{
-          cursor: pointer;
-          position:absolute;
-          right: 20px;
-          top:20px;
-          width: 20px;
-          height: 20px;
-          background-color:black;
-          color:white;
-          font-size: 25px;
-          font-weight: 600;
-          line-height: 20px;
-          text-align: center;
-          border-radius: 50%;
-          padding:7px;
-      }
-      .popup.active .overlay{
-          display: block;
-      }
-      .popup.active .content{
-          transition: 0.5s;
-          transform: translate(-50%,-50%) scale(1);
-      }
-      button{
-          cursor:pointer;
-          border-radius: 5px;
-          border-width:1px;
-          font-size: 20px;  
-          outline:none; 
-          padding:10px 15px;
-          background-color: transparent;
-          font-weight: 600;
-      }
-      a{
-          text-decoration: none;
-          color: black;
-      }
-      .column {
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Martial-Arts Game</title>
+    <link rel="icon" href="images/kick/4.png" type="image/icon type">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Courgette&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("images/background.jpg");
+            ;
+            background-size: cover;
+        }
+
+        #items {
+            text-align: left;
+            list-style-type: none;
+        }
+
+        #items li {
+            padding: 10px 12px;
+        }
+
+        .popup .overlay {
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .popup .content {
+            border-radius: 10px;
+            border-style: solid;
+            border-color: grey;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background-color: white;
+            width: 450px;
+            height: 400px;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 10px;
+        }
+
+        .popup .close-btn {
+            cursor: pointer;
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            color: white;
+            font-size: 25px;
+            font-weight: 600;
+            line-height: 20px;
+            text-align: center;
+            border-radius: 50%;
+            padding: 7px;
+        }
+
+        .popup.active .overlay {
+            display: block;
+        }
+
+        .popup.active .content {
+            transition: 0.5s;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        button {
+            cursor: pointer;
+            border-radius: 5px;
+            border-width: 1px;
+            font-size: 20px;
+            outline: none;
+            padding: 10px 15px;
+            background-color: transparent;
+            font-weight: 600;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        .column {
             float: left;
-            margin-left:100px;
-            margin-right:100px;
-            margin-top:50px;
+            margin-left: 100px;
+            margin-right: 100px;
+            margin-top: 50px;
             width: 33.33%;
             padding: 5px;
-      }
-           /* Clearfix (clear floats) */
-      .row::after {
-         content: "";
-         clear: both;
-         display: table;
-      }
-      hr{
-        width:110%;
-        margin-left:-20px;
-        margin-top:12%;
-        height:1px;
-        background:grey;
-     }
-     #options{
-        text-align: center;
-     }
-     #heading{
-        font-size: 60px;
-        font-family: 'Courgette', cursive;
-     }
-     #play_link{
-        padding-left:35px;
-        padding-right:35px;
-        margin-top: 10%;
-     }
-     #help{
-        margin-top: 8%;;
-     }
-     #play:hover{
-       background-color: rgb(253, 155, 155);
-       border-width: 2px;
-       border-color: red;
-       transition: 0.5s;
-     }
-     #help:hover{
-       background-color: rgb(56, 250, 72);
-       border-width: 2px;
-       border-color: green;
-       transition: 0.5s;
-     }
+        }
 
-  </style>
+        /* Clearfix (clear floats) */
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        hr {
+            width: 110%;
+            margin-left: -20px;
+            margin-top: 12%;
+            height: 1px;
+            background: grey;
+        }
+
+        #options {
+            text-align: center;
+        }
+
+        #heading {
+            font-size: 60px;
+            font-family: 'Courgette', cursive;
+        }
+
+        #play_link {
+            padding-left: 35px;
+            padding-right: 35px;
+            margin-top: 10%;
+        }
+
+        #help {
+            margin-top: 8%;
+            ;
+        }
+
+        #play:hover {
+            background-color: rgb(253, 155, 155);
+            border-width: 2px;
+            border-color: red;
+            transition: 0.5s;
+        }
+
+        #help:hover {
+            background-color: rgb(56, 250, 72);
+            border-width: 2px;
+            border-color: green;
+            transition: 0.5s;
+        }
+    </style>
 </head>
+
 <body>
-        <div class="popup" id="popup-1">
-            <div class="overlay"></div>
-            <div class="content">
-                <div class="close-btn" onclick="toggle()">&times;</div>
-                <hr>
-                <h1 >controls</h1>
-                <ul id="items">
-                    <li><b>Right arrow</b> and <b>'s'</b> - move <b>"Forward</b></li>
-                    <li><b>Left arrow</b> and <b>'d'</b> - move <b>"Backward</b></li>
-                    <li><b>Up arrow</b> and <b>'w'</b> - used to <b>"Kick</b></li>
-                    <li><b>Down arrow</b> and <b>'x'</b>- used to <b>"Punch</b></li>
-                    <li><b>Space</b> - used to <b>"Block"</b></li>
-                </ul>
-            </div>
+    <div class="popup" id="popup-1">
+        <div class="overlay"></div>
+        <div class="content">
+            <div class="close-btn" onclick="toggle()">&times;</div>
+            <hr>
+            <h1>controls</h1>
+            <ul id="items">
+                <li><b>Right arrow</b> and <b>'s'</b> - move <b>"Forward</b></li>
+                <li><b>Left arrow</b> and <b>'d'</b> - move <b>"Backward</b></li>
+                <li><b>Up arrow</b> and <b>'w'</b> - used to <b>"Kick</b></li>
+                <li><b>Down arrow</b> and <b>'x'</b>- used to <b>"Punch</b></li>
+                <li><b>Space</b> - used to <b>"Block"</b></li>
+            </ul>
         </div>
-        <div class="row">
-            <div class="column">
-               <div id="options">
+    </div>
+    <div class="row">
+        <div class="column">
+            <div id="options">
                 <ul style="list-style-type: none;">
                     <h1 id="heading">Kick boxing</h1>
                     <li><button id="play"><a id="play_link" href="MartialArts.html">Play</a></button></li>
                     <li><button onclick="toggle()" id="help">Help center</button></li>
                 </ul>
-               </div>
             </div>
-            <div class="column">
-                <img src="images/fist.png" alt="Snow" style="width:120%;margin-top:-20%;">
-            </div>
-          </div>
+        </div>
+        <div class="column">
+            <img src="images/fist.png" alt="Snow" style="width:120%;margin-top:-20%;">
+        </div>
+    </div>
     <script>
-        function toggle(){
+        function toggle() {
             document.getElementById("popup-1").classList.toggle("active");
         }
     </script>
 </body>
+
 </html>
-
-
