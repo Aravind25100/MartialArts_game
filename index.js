@@ -1,7 +1,20 @@
 // Create game objects for canvas
-let c = document.getElementById("game");
-let ctx = c.getContext("2d");
-let ctx1 = c.getContext("2d");
+let canvas = document.getElementById("game");
+let opponentCanvas = canvas.getContext("2d");
+let playerCanvas = canvas.getContext("2d");
+
+// Standing positions for the user and opponent
+let playerPosition = [0];
+let opponentPosition = [-1300];
+let playerMoves=0;
+let opponentMoves=0;
+
+// User and opponent's life span
+let opponentLife=100;
+let playerLife=100;
+
+// declaration for audio 
+let actionSound;
  
 // This function will used to load the images
 let loadImage = (src,callback) =>{
@@ -11,8 +24,8 @@ let loadImage = (src,callback) =>{
 };
 
 // This function will return the image path
-let imagePath = (FrameNumber,animation) =>{
-    return "images/"+ animation +"/"+FrameNumber+".png";
+let imagePath = (frameNumber,animation) =>{
+    return "images/"+ animation +"/"+frameNumber+".png";
 };
 
 // Each moves has different number frames. So, i note the number of frames to load the images
@@ -47,24 +60,24 @@ let loadImages = (callback) =>{
 };
 
 // This funtion is used to animate the user's move and the opponent's move. Then it will draw the images into the canvas 
-let Animate = (ctx,ctx1,leftpos,rightpos,images,animation,move,Collision,callback) =>{
+let Animate = (opponentCanvas,playerCanvas,leftpos,rightpos,images,animation,move,collision,callback) =>{
     // Sound for user's move
     if(animation==="kick" || animation==="punch"){
         actionSound = new sound("images/"+animation+".mp3");
         actionSound.play();
     }
-    if((rightmove===6 || leftmove===6 || rightmove+leftmove===6) && (((animation==="kick" || animation==="punch") && move==="block")|| ((move==="kick" || move==="punch") && animation==="block"))){
+    if((opponentMoves===6 || playerMoves===6 || opponentMoves+playerMoves===6) && (((animation==="kick" || animation==="punch") && move==="block")|| ((move==="kick" || move==="punch") && animation==="block"))){
         actionSound = new sound("images/shield.mp3");
         actionSound.play();
     }
     // Animate user's images
     images[animation].forEach((image,index)=>{
          setTimeout(()=>{
-            let extraframe=500;
-            if(Collision===6)
-               extraframe=400;
-            ctx1.clearRect(0,0,(leftpos+extraframe),500);
-            ctx1.drawImage(image,leftpos,0,500,500);
+            let extraFrame=500;
+            if(collision===6)
+               extraFrame=400;
+            playerCanvas.clearRect(0,0,(leftpos+extraFrame),500);
+            playerCanvas.drawImage(image,leftpos,0,500,500);
          },index*100);
     });
     // Sound for opponent's move
@@ -74,16 +87,16 @@ let Animate = (ctx,ctx1,leftpos,rightpos,images,animation,move,Collision,callbac
     // Animate opponent's images
     images[move].forEach((image,index)=>{
         setTimeout(()=>{
-           let extraframe=500;
-           if(Collision===6)
-               extraframe=320;
-           else if(Collision+1===6)
-               extraframe=350;
-           ctx.clearRect((-(rightpos)-extraframe),0,extraframe+50,500);
-           ctx.save(); // Save the current state
-           ctx.scale(-1, 1); // Set scale to flip the image
-           ctx.drawImage(image, rightpos, 0, 500, 500); // draw the image
-           ctx.restore(); // Restore the last saved state
+           let extraFrame=500;
+           if(collision===6)
+               extraFrame=320;
+           else if(collision+1===6)
+               extraFrame=350;
+           opponentCanvas.clearRect((-(rightpos)-extraFrame),0,extraFrame+50,500);
+           opponentCanvas.save(); // Save the current state
+           opponentCanvas.scale(-1, 1); // Set scale to flip the image
+           opponentCanvas.drawImage(image, rightpos, 0, 500, 500); // draw the image
+           opponentCanvas.restore(); // Restore the last saved state
         },index*100);
    });
     //This will call the aux function after animating both the user's and opponent's images    
@@ -94,8 +107,6 @@ let Animate = (ctx,ctx1,leftpos,rightpos,images,animation,move,Collision,callbac
 function getRndInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1) ) + min;
 };
-
-let actionSound;
 
 // This function is used to play the audio for the particular move.
 function sound(src) {
@@ -110,16 +121,6 @@ function sound(src) {
         this.sound.play();
     }  
 };
-
-// Standing positions for the user and opponent
-let leftposition = [0];
-let rightposition = [-1300];
-let leftmove=0;
-let rightmove=0;
-
-// User and opponent's life span
-let rightLife=100;
-let leftLife=100;
 
 loadImages((images)=>{
     let queuedAnimate=[];
@@ -136,80 +137,80 @@ loadImages((images)=>{
             selectedAnimate = queuedAnimate.shift();
         }
         // Used to move the opponent to the user
-        if(leftmove+rightmove<5)
+        if(playerMoves+opponentMoves<5)
            moves="forward";
 
         // Here change the position according to the forward move
         if(moves==="forward"){
-            if(leftmove==6 || leftmove+rightmove==6)
-               rightposition[0]=rightposition[0]
-            else if(leftmove<6){
-                if(rightposition[0]+100<=700){
-                   rightposition[0]=rightposition[0]+100
-                   rightmove=rightmove+1;
+            if(playerMoves==6 || playerMoves+opponentMoves==6)
+               opponentPosition[0]=opponentPosition[0]
+            else if(playerMoves<6){
+                if(opponentPosition[0]+100<=700){
+                   opponentPosition[0]=opponentPosition[0]+100
+                   opponentMoves=opponentMoves+1;
                 }
                 else{
-                    rightposition[0]=rightposition[0];
+                    opponentPosition[0]=opponentPosition[0];
                 }
             }
         }
         // Here change the position according to the backward move
         else if(moves==="backward"){
-            if(rightposition[0]-100>=-1300){
-                rightposition[0]=rightposition[0]-100;
-                rightmove=rightmove-1;
+            if(opponentPosition[0]-100>=-1300){
+                opponentPosition[0]=opponentPosition[0]-100;
+                opponentMoves=opponentMoves-1;
             }
             else{
-                rightposition[0]=rightposition[0];
+                opponentPosition[0]=opponentPosition[0];
             }
         }
         // Make shield sound if the player or user try to defense them when they are closer  
-        else if(moves==="block" && (rightmove===6 || leftmove===6 || rightmove+leftmove===6) && (selectedAnimate==="punch" || selectedAnimate==="kick")){
+        else if(moves==="block" && (opponentMoves===6 || playerMoves===6 || opponentMoves+playerMoves===6) && (selectedAnimate==="punch" || selectedAnimate==="kick")){
             actionSound = new sound("images/shield.mp3");
             actionSound.play();
         }
         // Reduce life for the opponent when the user try to attack and the opponent is not using block move to protect
-        if(leftmove===6){
+        if(playerMoves===6){
             if((selectedAnimate==="kick" || selectedAnimate==="punch") && moves!="block"){
                  let redLife = document.getElementById("lifeRed");
-                 setTimeout((rightLife=rightLife-10),1000);
-                 (redLife.style.width = rightLife+"%");
+                 setTimeout((opponentLife=opponentLife-10),1000);
+                 (redLife.style.width = opponentLife+"%");
             }
         }    
         // Reduce life for the user when the opponent try to attack and the user is not using block move to protect
-        if(rightmove===6){
+        if(opponentMoves===6){
             if((moves==="kick" || moves==="punch") && selectedAnimate!="block"){
                  let greenLife = document.getElementById("lifeGreen");
-                 setTimeout((leftLife=leftLife-10),1000);
-                 (greenLife.style.width = leftLife+"%");
+                 setTimeout((playerLife=playerLife-10),1000);
+                 (greenLife.style.width = playerLife+"%");
             }
         } 
         // Reduce life with respect to the player   
-        if(rightmove+leftmove===6){
+        if(opponentMoves+playerMoves===6){
                 if((selectedAnimate==="kick" || selectedAnimate==="punch") && (moves!="block")){
                      let redLife = document.getElementById("lifeRed");
-                     setTimeout((rightLife=rightLife-10),1000);
-                     (redLife.style.width = rightLife+"%");
+                     setTimeout((opponentLife=opponentLife-10),1000);
+                     (redLife.style.width = opponentLife+"%");
             }
             if((moves==="kick" || moves==="punch") && (selectedAnimate!="block")){
                  let greenLife = document.getElementById("lifeGreen");
-                 setTimeout((leftLife=leftLife-10),1000);
-                 (greenLife.style.width = leftLife+"%");
+                 setTimeout((playerLife=playerLife-10),1000);
+                 (greenLife.style.width = playerLife+"%");
             }
         } 
 
         // It will animate the pictures if the players are not lose
-        if(rightLife>0 && leftLife>0){
-               ctx.clearRect(0,0,1300,500);
-               Animate(ctx,ctx1,leftposition[0],rightposition[0],images,selectedAnimate,moves,rightmove+leftmove,aux);
+        if(opponentLife>0 && playerLife>0){
+               opponentCanvas.clearRect(0,0,1300,500);
+               Animate(opponentCanvas,playerCanvas,playerPosition[0],opponentPosition[0],images,selectedAnimate,moves,opponentMoves+playerMoves,aux);
         }
         // It will announce the player name who win the match
         else{
             let announcement="";
-            if(rightLife<=0){
+            if(opponentLife<=0){
                 announcement = "Player 1 win the match!";
             }
-            else if(leftLife<=0){
+            else if(playerLife<=0){
                 announcement = "Player 2 win the match!";
             }setTimeout(()=>{
                 document.getElementById("result").innerHTML=announcement;
@@ -228,25 +229,25 @@ loadImages((images)=>{
      };
      document.getElementById("forward").onclick = ()=>{
         queuedAnimate.push("forward");
-        if(rightmove==6 || leftmove+rightmove==6)
-           leftposition[0]=leftposition[0];
-        else if(rightmove+leftmove<6){
-           if(leftposition[0]+100<=600){
-               leftposition[0]=leftposition[0]+100;
-               leftmove=leftmove+1              
+        if(opponentMoves==6 || playerMoves+opponentMoves==6)
+           playerPosition[0]=playerPosition[0];
+        else if(opponentMoves+playerMoves<6){
+           if(playerPosition[0]+100<=600){
+               playerPosition[0]=playerPosition[0]+100;
+               playerMoves=playerMoves+1              
             }
            else
-               leftposition[0]=leftposition[0];
+               playerPosition[0]=playerPosition[0];
         }
     };
     document.getElementById("backward").onclick = ()=>{
         queuedAnimate.push("backward");
-        if(leftposition[0]-100>=0){
-            leftposition[0]=leftposition[0]-100;
-            leftmove=leftmove-1; 
+        if(playerPosition[0]-100>=0){
+            playerPosition[0]=playerPosition[0]-100;
+            playerMoves=playerMoves-1; 
        }
         else{
-            leftposition[0]=leftposition[0];
+            playerPosition[0]=playerPosition[0];
         }
      };
      document.getElementById("block").onclick = ()=>{
@@ -264,26 +265,26 @@ loadImages((images)=>{
         }
         else if(key==="ArrowRight" || key==="s"){
             queuedAnimate.push("forward");
-            if(rightmove==6 || leftmove+rightmove==6)
-               leftposition[0]=leftposition[0];
-            else if(rightmove+leftmove<6){
-               if(leftposition[0]+100<=600){
-                   leftposition[0]=leftposition[0]+100;
-                   leftmove=leftmove+1              
+            if(opponentMoves==6 || playerMoves+opponentMoves==6)
+               playerPosition[0]=playerPosition[0];
+            else if(opponentMoves+playerMoves<6){
+               if(playerPosition[0]+100<=600){
+                   playerPosition[0]=playerPosition[0]+100;
+                   playerMoves=playerMoves+1              
                 }
                else
-                   leftposition[0]=leftposition[0];
+                   playerPosition[0]=playerPosition[0];
             }
                
         }
         else if(key==="ArrowLeft" || key==="d"){
             queuedAnimate.push("backward");
-            if(leftposition[0]-100>=0){
-                leftposition[0]=leftposition[0]-100;
-                leftmove=leftmove-1; 
+            if(playerPosition[0]-100>=0){
+                playerPosition[0]=playerPosition[0]-100;
+                playerMoves=playerMoves-1; 
            }
             else{
-                leftposition[0]=leftposition[0];
+                playerPosition[0]=playerPosition[0];
             }
         }
         else if(event.code === "Space"){
